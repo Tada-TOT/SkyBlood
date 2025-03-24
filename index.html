@@ -11,7 +11,7 @@
         left: 0;
         right: 0;
         background-color: #ff9800;
-        color: white;
+        color: #1F1F20;
         text-align: center;
         padding: 15px;
         font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
   </head>
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
     <div id="loading-alert">
-      <div>Loading game data file (410MB) - Please wait...</div>
+      <div>Loading game data... Please wait</div>
       <div id="loading-progress">
         <div id="loading-bar"></div>
       </div>
@@ -44,10 +44,12 @@
     <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1" style="width: 1920px; height: 1080px; background: #1F1F20"></canvas>
     <script src="Build/Assignment3LLast.loader.js?v=1.0.1"></script>
     <script>
-      // Show loading alert
+      // Global variables
       var loadingAlert = document.getElementById('loading-alert');
       var loadingBar = document.getElementById('loading-bar');
-      
+      var dataUrl = "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data";
+      var dataFileBuffer = null;
+
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
@@ -63,24 +65,9 @@
         document.body.style.textAlign = "left";
       }
 
-      // Monitor the .data file download
-      fetch("https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data", {
-        method: 'HEAD'
-      }).then(function(response) {
-        if (response.ok) {
-          console.log("Data file is accessible");
-        } else {
-          loadingAlert.innerHTML = "Error loading game .data! Please refresh and try again.";
-          loadingAlert.style.backgroundColor = "#f44336";
-        }
-      }).catch(function(error) {
-        loadingAlert.innerHTML = "Error checking data file: " + error.message;
-        loadingAlert.style.backgroundColor = "#f44336";
-      });
-
-      // Fetch with progress monitoring
+      // Fetch the data file once with progress monitoring
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data", true);
+      xhr.open('GET', dataUrl, true);
       xhr.responseType = 'arraybuffer';
       
       xhr.onprogress = function(event) {
@@ -95,13 +82,17 @@
       
       xhr.onload = function() {
         if (xhr.status === 200) {
-          // Data file loaded successfully, hide the alert
-          loadingAlert.style.display = 'none';
+          // Store the data buffer
+          dataFileBuffer = xhr.response;
           
-          // Now create the Unity instance
+          // Update alert to show success
+          loadingAlert.querySelector('div').textContent = 'Game data loaded successfully! Initializing game...';
+          loadingBar.style.width = '100%';
+          
+          // Now create the Unity instance with our cached data
           startUnity();
         } else {
-          loadingAlert.innerHTML = "Error loading game .data, Status: " + xhr.status;
+          loadingAlert.innerHTML = "Error loading game data. Status: " + xhr.status;
           loadingAlert.style.backgroundColor = "#f44336";
         }
       };
@@ -111,13 +102,31 @@
         loadingAlert.style.backgroundColor = "#f44336";
       };
       
-      // Start the request
+      // Start the request immediately when the page loads
       xhr.send();
 
       function startUnity() {
+        // Override fetch to use our cached data
+        var originalFetch = window.fetch;
+        window.fetch = function(input, init) {
+          if (input === dataUrl || (typeof input === 'string' && input.includes(dataUrl))) {
+            console.log("Intercepted fetch for data file, using cached version");
+            return Promise.resolve(new Response(dataFileBuffer, {
+              status: 200,
+              headers: new Headers({
+                'Content-Type': 'application/octet-stream',
+                'Content-Length': dataFileBuffer.byteLength.toString()
+              })
+            }));
+          }
+          // For all other requests, use the original fetch
+          return originalFetch(input, init);
+        };
+        
+        // Create the Unity instance
         createUnityInstance(document.querySelector("#unity-canvas"), {
           arguments: [],
-          dataUrl: "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data",
+          dataUrl: dataUrl,
           frameworkUrl: "Build/Assignment3LLast.framework.js",
           codeUrl: "Build/Assignment3LLast.wasm",
           streamingAssetsUrl: "StreamingAssets",
@@ -126,6 +135,13 @@
           productVersion: "1.0",
           // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
           // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+        }).then(function(unityInstance) {
+          // Unity is fully loaded and initialized
+          loadingAlert.style.display = 'none';
+        }).catch(function(error) {
+          // Unity initialization failed
+          loadingAlert.innerHTML = "Error initializing Unity: " + error;
+          loadingAlert.style.backgroundColor = "#f44336";
         });
       }
     </script>
