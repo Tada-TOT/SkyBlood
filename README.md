@@ -6,11 +6,11 @@
   # SkyBlood
   ---
   
-  - [Game Link](https://Tada-TOT.github.io/SkyBlood/)
+  ## [Game Link](https://Tada-TOT.github.io/SkyBlood/)
   
   **Important! Refresh the page one to three times to ensure that the .data file is downloaded to the browser (it's 410MB!)**
   
-  - ![image](https://github.com/user-attachments/assets/65c647e1-7aa9-455b-84c5-f638f8c145a2)
+  ![image](https://github.com/user-attachments/assets/65c647e1-7aa9-455b-84c5-f638f8c145a2)
   
   ### As in the image, the game is resource intensive (uses 1.6GB of RAM and nearly 100% CPU utilization).
   <div class="alert alert-block alert-warning" role="alert">
