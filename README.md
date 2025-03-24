@@ -5,10 +5,23 @@
 
 **Important! Refresh the page one to three times to ensure that the .data file is downloaded to the browser (it's 410MB!)**
 
+---
+
 ![image](https://github.com/user-attachments/assets/65c647e1-7aa9-455b-84c5-f638f8c145a2)
 
 ### As in the image, the game is resource intensive (uses 1.6GB of RAM and nearly 100% CPU utilization).
-> **It is advisable to suspend/close other tabs and windows to play the game without lagging.**
+<div style="
+  background-color: #fff3cd;
+  padding: 10px;
+  border-left: 5px solid #ffc107;
+  border-radius: 5px;
+  margin: 10px 0;
+  color: #856404;
+">
+  <strong>It is advisable to suspend/close other tabs and windows to play the game without lagging.</strong>
+</div>
+
+---
 
 ### Controls:
 - WASD: Move
