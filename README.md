@@ -2,16 +2,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
+
   # SkyBlood
   ---
   
-  [Game Link](https://Tada-TOT.github.io/SkyBlood/)
+  - [Game Link](https://Tada-TOT.github.io/SkyBlood/)
   
   **Important! Refresh the page one to three times to ensure that the .data file is downloaded to the browser (it's 410MB!)**
   
-  ---
-  
-  ![image](https://github.com/user-attachments/assets/65c647e1-7aa9-455b-84c5-f638f8c145a2)
+  - ![image](https://github.com/user-attachments/assets/65c647e1-7aa9-455b-84c5-f638f8c145a2)
   
   ### As in the image, the game is resource intensive (uses 1.6GB of RAM and nearly 100% CPU utilization).
   <div class="alert alert-block alert-warning" role="alert">
