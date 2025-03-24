@@ -28,7 +28,7 @@
   ### Objectives:
   1. Collect 100 blood vials (red spheres)
   2. Use 5 speed boosts (green capsules)
-  3. Navigate using bridges between platforms (There are hidden! Find them by their shadow to cross the mountains)
+  3. Navigate using bridges between mountains (They are hidden! Find them by their shadow to cross the mountains)
   4. Avoid falling off the terrain
-  5. Find the village to save your progress.
+  5. Save your progress at the village.
 </body>
