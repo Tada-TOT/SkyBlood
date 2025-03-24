@@ -4,11 +4,50 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity Web Player | Assignment2</title>
+    <style>
+      #loading-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #ff9800;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      }
+      
+      #loading-progress {
+        width: 100%;
+        height: 5px;
+        margin-top: 10px;
+        background-color: rgba(255,255,255,0.3);
+      }
+      
+      #loading-bar {
+        height: 100%;
+        width: 0%;
+        background-color: white;
+        transition: width 0.3s;
+      }
+    </style>
   </head>
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <div id="loading-alert">
+      <div>Loading game data file (410MB) - Please wait...</div>
+      <div id="loading-progress">
+        <div id="loading-bar"></div>
+      </div>
+    </div>
     <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1" style="width: 1920px; height: 1080px; background: #1F1F20"></canvas>
     <script src="Build/Assignment3LLast.loader.js?v=1.0.1"></script>
     <script>
+      // Show loading alert
+      var loadingAlert = document.getElementById('loading-alert');
+      var loadingBar = document.getElementById('loading-bar');
+      
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
@@ -24,18 +63,71 @@
         document.body.style.textAlign = "left";
       }
 
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        arguments: [],
-        dataUrl: "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data",
-        frameworkUrl: "Build/Assignment3LLast.framework.js",
-        codeUrl: "Build/Assignment3LLast.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Assignment2",
-        productVersion: "1.0",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      // Monitor the .data file download
+      fetch("https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data", {
+        method: 'HEAD'
+      }).then(function(response) {
+        if (response.ok) {
+          console.log("Data file is accessible");
+        } else {
+          loadingAlert.innerHTML = "Error loading game .data! Please refresh and try again.";
+          loadingAlert.style.backgroundColor = "#f44336";
+        }
+      }).catch(function(error) {
+        loadingAlert.innerHTML = "Error checking data file: " + error.message;
+        loadingAlert.style.backgroundColor = "#f44336";
       });
+
+      // Fetch with progress monitoring
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data", true);
+      xhr.responseType = 'arraybuffer';
+      
+      xhr.onprogress = function(event) {
+        if (event.lengthComputable) {
+          var percentComplete = (event.loaded / event.total) * 100;
+          loadingBar.style.width = percentComplete + '%';
+          loadingAlert.querySelector('div').textContent = 
+            'Loading game data file (' + Math.round(event.total / (1024 * 1024)) + 'MB) - ' + 
+            Math.round(percentComplete) + '%';
+        }
+      };
+      
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          // Data file loaded successfully, hide the alert
+          loadingAlert.style.display = 'none';
+          
+          // Now create the Unity instance
+          startUnity();
+        } else {
+          loadingAlert.innerHTML = "Error loading game .data, Status: " + xhr.status;
+          loadingAlert.style.backgroundColor = "#f44336";
+        }
+      };
+      
+      xhr.onerror = function() {
+        loadingAlert.innerHTML = "Network error occurred while loading game data.";
+        loadingAlert.style.backgroundColor = "#f44336";
+      };
+      
+      // Start the request
+      xhr.send();
+
+      function startUnity() {
+        createUnityInstance(document.querySelector("#unity-canvas"), {
+          arguments: [],
+          dataUrl: "https://media.githubusercontent.com/media/Tada-TOT/SkyBlood/master/Build/Assignment3LLast.data",
+          frameworkUrl: "Build/Assignment3LLast.framework.js",
+          codeUrl: "Build/Assignment3LLast.wasm",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "Assignment2",
+          productVersion: "1.0",
+          // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+          // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+        });
+      }
     </script>
   </body>
 </html>
