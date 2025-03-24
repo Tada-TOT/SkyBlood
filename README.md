@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 # SkyBlood
 ---
 
@@ -12,7 +14,7 @@
 ### As in the image, the game is resource intensive (uses 1.6GB of RAM and nearly 100% CPU utilization).
 </div>
   <div class="alert alert-block alert-warning">
-  <b><ins>Note:</ins></b><strong>It is advisable to suspend/close other tabs and windows to play the game without lagging.</strong>
+  <ins>Note: </ins> <strong>It is advisable to suspend/close other tabs and windows to play the game without lagging.</strong>
 </div>
 
 ---
